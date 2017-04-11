@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="Mystyles.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+		</script>
+		<title>Pure JQuery autoComplete</title>
+	</head>
+<body>
+ <div class="inputTypeSelector">
+	<input class="autoCompleter" type="text" list="autoComplete" />
+	<datalist class="suggestionsHolder" id="autoComplete">
+	 	<!-- intial datalist can be empty -->
+		<!-- or to add include below line -->
+	 	<!-- <option>value1</option> -->
+	</datalist>
+ </div>
+
+</body>
+<script>
+
+	jQuery(document).ready(function($) {
+		//Replace this searchList with custom values
+	var mysearchList = ["Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua &amp; Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","France","French Polynesia","French West Indies","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guam","Guatemala","Guernsey","Guinea","Guinea Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Isle of Man"];
+
+	$(".autoCompleter").on('keyup', function(event) {
+		var inputVal = $(this).val().toLocaleLowerCase();
+		if(inputVal.length)
+		{
+			$(".suggestionsHolder .suggestions").detach();
+			$.each(mysearchList, function(index, val) {
+				if(val.toLocaleLowerCase().includes(inputVal))
+				{
+					$(".suggestionsHolder").append('<option class="suggestions">'+val+'</option>')
+				}
+			});
+				$(".suggestions").unbind('click').bind('click', function(event) {
+					$(".autoCompleter").val($(this).html());
+					$(".suggestionsHolder .suggestions").detach();
+				});
+			}
+		else
+		{
+			$(".suggestionsHolder .suggestions").detach();
+		}
+	});
+});
+
+</script>
+</html>
