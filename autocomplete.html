@@ -1,50 +1,56 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="Mystyles.css">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
-		</script>
-		<title>Pure JQuery autoComplete</title>
+		<title>Autocomplete</title>
+		<script src="jquery-3.2.1.js"></script>
+		<script src="suggestion.js"></script>
 	</head>
-<body>
- <div class="inputTypeSelector">
-	<input class="autoCompleter" type="text" list="autoComplete" />
-	<datalist class="suggestionsHolder" id="autoComplete">
-	 	<!-- intial datalist can be empty -->
-		<!-- or to add include below line -->
-	 	<!-- <option>value1</option> -->
-	</datalist>
- </div>
+	<body>
+	<div class=autoCompleteHolder>
+		<input type="text" class="myNewInput" name="inputHolder" list="autoComplete">
+		<datalist class="suggestionContainer" id="autoComplete">
+			<option class="holder" value="Internet Explorer">
+		</datalist>
+	</div>
+	</body>
+	<script>
+	$(document).ready(function() {
+		var cache = {};
+		var list = ["india", "america", "newZealand", "pakistan"];
+		var result = [];
+		var suggesting = false;
+		$(".myNewInput").on('keyup', function(event) {
+			var inputvalue = $(this).val();
+			if (inputvalue.length > 2) {
+				if (!suggesting) {
+					suggesting = true;
+					if (inputvalue in cache) {
+						result = cache[inputvalue];
+					} else {
+						result = $.grep(list, function(item) {
+							return item.search(RegExp(inputvalue, "i")) != -1;
+						});
+						cache[inputvalue] = result;
+					}
+					$(".holder").detach();
 
-</body>
-<script>
-
-	jQuery(document).ready(function($) {
-		//Replace this searchList with custom values
-	var mysearchList = ["Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua &amp; Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","France","French Polynesia","French West Indies","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guam","Guatemala","Guernsey","Guinea","Guinea Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Isle of Man"];
-
-	$(".autoCompleter").on('keyup', function(event) {
-		var inputVal = $(this).val().toLocaleLowerCase();
-		if(inputVal.length)
-		{
-			$(".suggestionsHolder .suggestions").detach();
-			$.each(mysearchList, function(index, val) {
-				if(val.toLocaleLowerCase().includes(inputVal))
-				{
-					$(".suggestionsHolder").append('<option class="suggestions">'+val+'</option>')
+					var suggestions = '<div class="suggestions"></div>';
+					for (item in result) {
+						$(".suggestionContainer").append($(suggestions).append('<option class="holder" value=' + result[item] + '>'));
+					}
+					result = [];
+					suggesting = false;
+					var elements = $(".suggestions");
+					$.each(elements, function(index, val) {
+						if ($(val).children().length == 0) {
+							$(val).remove();
+						}
+					});
 				}
-			});
-				$(".suggestions").unbind('click').bind('click', function(event) {
-					$(".autoCompleter").val($(this).html());
-					$(".suggestionsHolder .suggestions").detach();
-				});
+			} else {
+				$(".holder").detach();
 			}
-		else
-		{
-			$(".suggestionsHolder .suggestions").detach();
-		}
+		});
 	});
-});
-
-</script>
+	</script>
 </html>
